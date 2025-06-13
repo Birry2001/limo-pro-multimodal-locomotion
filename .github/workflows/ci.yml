@@ -1,0 +1,87 @@
+name: CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  lint:
+    name: Lint Python & C++
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      - name: Install Python dev dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install flake8
+      - name: Run flake8
+        run: flake8 src
+      - name: Install clang-format
+        run: sudo apt-get update && sudo apt-get install -y clang-format
+      - name: Check C++ style
+        run: |
+          find src -name '*.cpp' -o -name '*.hpp' | xargs clang-format --dry-run --Werror
+
+  build:
+    name: Build ROS Packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up ROS Noetic
+        uses: ros-tooling/setup-ros@v0.1
+        with:
+          distro: noetic
+      - name: Install dependencies
+        run: |
+          sudo apt-get update
+          rosdep update
+          rosdep install --from-paths src --ignore-src -r -y
+      - name: Colcon build
+        run: colcon build --cmake-args -DCMAKE_BUILD_TYPE=Release
+
+  test:
+    name: Run Tests
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up ROS Noetic
+        uses: ros-tooling/setup-ros@v0.1
+        with:
+          distro: noetic
+      - name: Source Workspace
+        run: source install/setup.bash
+      - name: Run pytest
+        run: |
+          pip install pytest
+          pytest tests
+      - name: Run rostest
+        run: |
+          rostest src/terrain_classifier test_classifier.test
+
+  docs:
+    name: Build & Deploy Docs
+    runs-on: ubuntu-latest
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - uses: actions/checkout@v3
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.8'
+      - name: Install MkDocs and plugins
+        run: |
+          pip install mkdocs mkdocs-material
+      - name: Build docs
+        run: mkdocs build --clean
+      - name: Deploy to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./site
