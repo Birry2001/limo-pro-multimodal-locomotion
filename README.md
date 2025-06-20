@@ -13,7 +13,7 @@
 - [License](#license)
 
 ## Overview
-This project equips the AgileX Limo Pro robot with an embedded pipeline that fuses LiDAR and RGB-D data to classify terrain (hard, soft, obstacle) and automatically switch between differential, Ackermann, omni and tracked modes in ROS :contentReference[oaicite:1]{index=1}.
+This project equips the AgileX Limo Pro robot with an embedded pipeline that fuses LiDAR and RGB-D data to classify terrain (hard, soft, obstacle) and automatically switch between differential, Ackermann, omni and tracked modes in ROS.
 
 ## Features
 - Real-time terrain classification (<50 ms inference)  
