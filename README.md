@@ -28,7 +28,7 @@ This project equips the AgileX Limo Pro robot with an embedded pipeline that fus
 
 ## Installation
 ```bash
-git clone https://github.com/<your-org>/limo-pro-multimodal-locomotion.git
+git clone https://github.com/Birry2001/limo-pro-multimodal-locomotion.git
 cd limo-pro-multimodal-locomotion
 pip install -r requirements.txt
 colcon build
