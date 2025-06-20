@@ -1,6 +1,6 @@
 # Limo Pro Multimodal Locomotion
 
-**Adaptive multimodal locomotion on AgileX Limo Pro via real-time terrain classification and automatic mode switching.** :contentReference[oaicite:0]{index=0}
+**Adaptive multimodal locomotion on AgileX Limo Pro via real-time terrain classification and automatic mode switching.** 
 
 ## Table of Contents
 - [Overview](#overview)
